@@ -1,0 +1,209 @@
+[
+  {
+    "id": "hulatang_laocheng",
+    "name": "老字号李强/高记胡辣汤",
+    "area": "老城区",
+    "price_per_person": 10,
+    "features": ["本地人", "早餐", "传统"],
+    "avoid": false,
+    "tips": ["早6-10点营业，一碗胡辣汤配油条、油饼或水煎包是标配。"]
+  },
+  {
+    "id": "luoyangshuixi_zhenbutong",
+    "name": "真不同饭店",
+    "area": "老城区",
+    "price_per_person": 80,
+    "features": ["老字号", "非遗", "宴请"],
+    "avoid": false,
+    "tips": ["洛阳水席的代表，适合体验全套宴席文化，人少可点招牌菜如牡丹燕菜。"]
+  },
+  {
+    "id": "niuroutang_songshan",
+    "name": "宋园涮牛肚/牛肉汤",
+    "area": "瀍河回族区",
+    "price_per_person": 25,
+    "features": ["本地人", "夜宵", "清真"],
+    "avoid": false,
+    "tips": ["涮牛肚是洛阳特色，酱香浓郁。搭配一碗附近的凌晨牛肉汤，是本地人深夜食堂。"]
+  },
+  {
+    "id": "yuntunmian_jiefanglu",
+    "name": "小街天府",
+    "area": "西工区",
+    "price_per_person": 30,
+    "features": ["老字号", "小吃集合", "性价比高"],
+    "avoid": false,
+    "tips": ["24小时营业，担担面、糖醋麻辣小土豆、美龄粥等川味小吃闻名，本地人也常去。"]
+  },
+  {
+    "id": "lvdaguan_tang",
+    "name": "南关小碗牛肉汤",
+    "area": "老城区/瀍河区",
+    "price_per_person": 15,
+    "features": ["早餐", "本地人", "必体验"],
+    "avoid": false,
+    "tips": ["“甜”指原味，喝汤时根据口味自己加盐。一定要配饼丝或油旋，泡着吃。"]
+  },
+  {
+    "id": "roujiamo_laomiao",
+    "name": "潼关肉夹馍（连锁）",
+    "area": "遍布各商圈",
+    "price_per_person": 15,
+    "features": ["快餐", "方便"],
+    "avoid": false,
+    "tips": ["虽然不是洛阳本土，但在洛阳很普遍的简餐选择，馍酥肉香，快速解决一餐。"]
+  },
+  {
+    "id": "meishijie_luoyang",
+    "name": "十字街夜市",
+    "area": "老城区",
+    "price_per_person": 50,
+    "features": ["夜市", "小吃集合", "游客多"],
+    "avoid": false,
+    "tips": ["夜晚非常热闹，可以品尝不翻汤、烤面筋、牡丹银丝酥等各式小吃，感受烟火气。"]
+  },
+  {
+    "id": "yixinglou",
+    "name": "宴江南/某高档融合菜",
+    "area": "洛龙新区",
+    "price_per_person": 150,
+    "features": ["环境好", "融合菜", "商务"],
+    "avoid": false,
+    "tips": ["适合对就餐环境有要求或商务宴请，菜品精致但本地特色不突出。"]
+  },
+  {
+    "id": "laomian_jinkaiyuan",
+    "name": "开源胡辣汤（总店）",
+    "area": "涧西区",
+    "price_per_person": 12,
+    "features": ["本地人", "早餐", "分店多"],
+    "avoid": false,
+    "tips": ["涧西区有名的胡辣汤品牌，味道浓郁，肉量足，常需要排队。"]
+  },
+  {
+    "id": "bulaotang_laojie",
+    "name": "丽景门不翻汤",
+    "area": "老城区丽景门附近",
+    "price_per_person": 20,
+    "features": ["游客特产", "小吃"],
+    "avoid": true,
+    "tips": ["多为游客开设，味道参差不齐，本地人较少专门去喝。想尝可找家有本地老人的店。"]
+  },
+  {
+    "id": "huimincan",
+    "name": "塔西烧烤城/马坡烧烤",
+    "area": "瀍河回族区/郊区",
+    "price_per_person": 60,
+    "features": ["夜宵", "清真烧烤", "本地聚集"],
+    "avoid": false,
+    "tips": ["夏天夜晚人气极旺，整条街都是烧烤摊，牛羊肉新鲜，是体验本地夜生活的好去处。"]
+  },
+  {
+    "id": "chaocai_dapaidang",
+    "name": "龙鳞路/长安路炒菜大排档",
+    "area": "涧西区",
+    "price_per_person": 40,
+    "features": ["性价比", "家常味", "夜宵"],
+    "avoid": false,
+    "tips": ["围绕大型国企生活区形成的餐饮街，炒菜、砂锅、卤味应有尽有，价格实惠味道地道。"]
+  },
+  {
+    "id": "luoyang_pijiu",
+    "name": "洛阳宫啤酒烧烤（任意本地烧烤摊）",
+    "area": "遍布全市",
+    "price_per_person": 50,
+    "features": ["本地品牌", "烧烤伴侣"],
+    "avoid": false,
+    "tips": ["吃烧烤时不妨点一瓶本地产的“洛阳宫”啤酒（俗称“十一度”），口感清爽。"]
+  },
+  {
+    "id": "jiaozi_guoyun",
+    "name": "国宴/N星级酒店自助餐",
+    "area": "新区/景区周边",
+    "price_per_person": 200,
+    "features": ["高端", "自助", "环境"],
+    "avoid": false,
+    "tips": ["预算充足且对品质和环境有高要求时可选择，但缺乏本地市井特色。"]
+  },
+  {
+    "id": "dongbeicai",
+    "name": "东北饺子馆（连锁）",
+    "area": "遍布各区",
+    "price_per_person": 35,
+    "features": ["家常", "分量足"],
+    "avoid": false,
+    "tips": ["在洛阳的东北移民很多，因此东北菜馆也多，锅包肉、地三鲜等菜品受大众欢迎。"]
+  },
+  {
+    "id": "malatang_xuefu",
+    "name": "学校周边麻辣烫/冒菜",
+    "area": "河南科技大学等高校周边",
+    "price_per_person": 25,
+    "features": ["学生价", "年轻化"],
+    "avoid": false,
+    "tips": ["围绕大学城，有许多性价比高的麻辣烫、冒菜、米粉店，适合年轻人口味。"]
+  },
+  {
+    "id": "lanzhoulamian",
+    "name": "东方宫兰州牛肉面（连锁）",
+    "area": "商业区",
+    "price_per_person": 20,
+    "features": ["清真", "快餐", "标准化"],
+    "avoid": false,
+    "tips": ["作为全国连锁，品质稳定，是不知道吃什么时安全快捷的选择。"]
+  },
+  {
+    "id": "jingqu_kuaican",
+    "name": "龙门/白马寺景区内餐厅",
+    "area": "景区内",
+    "price_per_person": 50,
+    "features": ["方便", "游客"],
+    "avoid": true,
+    "tips": ["价格通常偏高，口味普通。建议在景区外或市区用餐，或自备干粮。"]
+  },
+  {
+    "id": "zaocan_duijie",
+    "name": "路边早餐摊（油条、豆腐脑、菜角）",
+    "area": "各居民区巷口",
+    "price_per_person": 8,
+    "features": ["最本地", "烟火气", "便宜"],
+    "avoid": false,
+    "tips": ["观察哪里本地居民排队多就去哪里，是体验洛阳日常早餐最真实的方式。"]
+  },
+  {
+    "id": "yangrou paomo_sx",
+    "name": "西安羊肉泡馍（洛阳分店）",
+    "area": "商业区",
+    "price_per_person": 35,
+    "features": ["西北风味"],
+    "avoid": false,
+    "tips": ["洛阳离西安近，受其饮食影响，不少泡馍店味道也相当正宗。"]
+  },
+  {
+    "id": "xiancai_chaoshi",
+    "name": "丹尼斯/大张超市熟食区",
+    "area": "各大型超市",
+    "price_per_person": 20,
+    "features": ["方便", "本地品牌", "熟食"],
+    "avoid": false,
+    "tips": ["本地连锁超市，熟食区有各种卤味、凉菜、面食，干净卫生，适合买回酒店或路上吃。"]
+  },
+  {
+    "id": "wanghong_xicha",
+    "name": "景区旁网红咖啡馆/奶茶店",
+    "area": "洛邑古城、应天门周边",
+    "price_per_person": 40,
+    "features": ["网红", "拍照", "休闲"],
+    "avoid": false,
+    "tips": ["环境通常装修有特色，适合拍照休息，但饮品价格高于市价，重在氛围。"]
+  },
+  {
+    "id": "mianguan_luolong",
+    "name": "龙翔路/关林市场面馆",
+    "area": "洛龙区/关林周边",
+    "price_per_person": 15,
+    "features": ["劳工食堂", "量大实惠"],
+    "avoid": false,
+    "tips": ["围绕批发市场、物流园的面馆，面条分量极大，汤卤实在，是体力劳动者的食堂。"]
+  }
+]
