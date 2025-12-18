@@ -71,53 +71,70 @@
       </div>
     </div>
 
-    <!-- 右侧：行程可视化 (占 60%) -->
-    <div class="w-3/5 h-full overflow-y-auto bg-gray-100 p-6">
-      <div class="bg-white rounded-xl shadow-sm border min-h-[500px]">
-        <div class="p-4 border-b flex justify-between items-center bg-gray-50 rounded-t-xl">
-          <h3 class="font-bold text-gray-700">📅 行程预览</h3>
-          <span class="text-xs text-gray-400" v-if="itinerary">自动同步中</span>
+<!-- 右侧：行程可视化 (占 60%) - 调试专用紧凑版 -->
+    <div class="w-3/5 h-full overflow-y-auto bg-gray-50 p-4">
+      <div class="bg-white rounded border shadow-sm min-h-full">
+        <!-- 顶部栏 -->
+        <div class="p-3 border-b bg-gray-100 flex justify-between items-center sticky top-0 z-10">
+          <h3 class="font-bold text-gray-700">📋 行程数据视图 </h3>
+          <div class="text-xs text-gray-500 font-mono" v-if="itinerary">
+            Days: {{ itinerary.plan.length }} | Total Spots: {{ itinerary.plan.reduce((acc, day) => acc + day.spots.length, 0) }}
+          </div>
         </div>
 
-        <div v-if="!itinerary" class="flex flex-col items-center justify-center h-64 text-gray-400">
-          <div class="text-4xl mb-2">🗺️</div>
-          <p>暂无行程，请在左侧告诉李白你的需求</p>
+        <!-- 空状态 -->
+        <div v-if="!itinerary" class="flex flex-col items-center justify-center h-96 text-gray-400">
+          <p>等待数据生成...</p>
         </div>
 
-        <div v-else class="p-6">
-          <div v-for="day in itinerary.plan" :key="day.day" class="mb-8 last:mb-0 relative pl-6 border-l-2 border-blue-200">
-            <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-blue-500 border-2 border-white"></div>
-            <h4 class="font-bold text-lg text-gray-800 mb-4">第 {{ day.day }} 天</h4>
-            
-            <div class="space-y-3">
-              <!-- 行程卡片 -->
-              <div 
-                v-for="spot in day.spots" 
-                :key="spot.start"
-                class="bg-white border rounded-lg p-3 hover:shadow-md transition-shadow flex gap-4 items-center group"
-                :class="getCardStyle(spot)"
-              >
-                <!-- 时间 -->
-                <div class="w-16 text-center border-r pr-4">
-                  <div class="font-mono font-bold text-gray-700">{{ spot.start }}</div>
-                  <div class="text-xs text-gray-400">{{ spot.duration }}小时</div>
-                </div>
-
-                <!-- 内容 -->
-                <div class="flex-1">
-                  <div class="font-bold text-gray-800">{{ spot.name }}</div>
-                  <div class="flex gap-2 mt-1">
-                    <span 
-                      v-for="tag in spot.tags" 
-                      :key="tag"
-                      class="text-[10px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-500"
-                    >
-                      #{{ tag }}
-                    </span>
-                  </div>
-                </div>
-              </div>
+        <!-- 数据表格 -->
+        <div v-else class="p-4 space-y-6">
+          <div v-for="day in itinerary.plan" :key="day.day" class="border rounded overflow-hidden">
+            <!-- 天数标题 -->
+            <div class="bg-blue-100 px-3 py-1 font-bold text-blue-800 text-sm border-b border-blue-200">
+              第 {{ day.day }} 天
             </div>
+            
+            <table class="w-full text-left text-sm border-collapse">
+              <thead>
+                <tr class="bg-gray-50 text-gray-500 border-b text-xs">
+                  <th class="px-3 py-2 w-20">开始时间</th>
+                  <th class="px-3 py-2 w-16">时长(h)</th>
+                  <th class="px-3 py-2">名称</th>
+                  <th class="px-3 py-2">标签 </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr 
+                  v-for="spot in day.spots" 
+                  :key="spot.start + spot.name"
+                  class="border-b last:border-0 hover:bg-gray-50 font-mono"
+                  :class="getCardStyle(spot)"
+                >
+                  <!-- 时间列 (加粗方便看顺延) -->
+                  <td class="px-3 py-2 font-bold text-gray-700">{{ spot.start }}</td>
+                  <td class="px-3 py-2 text-gray-500">{{ spot.duration }}</td>
+                  
+                  <!-- 名称列 -->
+                  <td class="px-3 py-2 font-sans text-gray-800">
+                     {{ spot.name }}
+                  </td>
+                  
+                  <!-- 标签列 -->
+                  <td class="px-3 py-2">
+                    <div class="flex flex-wrap gap-1">
+                      <span 
+                        v-for="tag in spot.tags" 
+                        :key="tag" 
+                        class="px-1.5 rounded bg-white border border-gray-300 text-gray-500 text-[10px]"
+                      >
+                        {{ tag }}
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

@@ -25,30 +25,26 @@ async def planner_agent(session, user_input:str):
         history_text = "\n".join(f"{m['sender']}: {m['text']}" for m in session.history[-5:]) if session.history else "无"
 
     prompt = f"""
-你是洛阳旅游规划智能体（Planner）。
-为了提供更好的导游服务，你还需要判断用户现在是否需要“知识支持”。
-可选action：
-- recommend_restaurant
-- recommend_spot
-- tell_history
-- casual_chat
+你是一个路由助手。请根据用户最新的话，判断是否需要【修改或生成行程表】。
 
-【当前情况】
--角色：{session.role}
--时间：{session.time}
--地点：{session.location}
--历史记录：{history_text}
+【参考历史】
+{history_text}
 
-【用户说】
-{user_input}
+【用户最新输入】
+"{user_input}"
 
-【输出】
-请只输出JSON：
-{{
-    "action":action名,
-    "detail": "具体景点或餐厅名称，如无可留空"
-}}
-不要输出其他文字。
+【分类标准】
+1. **update_plan** (需要修改):
+   - 用户表达了需求变化（饿了、累了、想去哪、不喜欢哪、时间不够）。
+   - 用户要求规划、重置、调整顺序。
+   - 只要涉及行程表(JSON)的变动，都选这个。
+   
+2. **chat** (不需要修改):
+   - 纯闲聊、问候、问历史知识、问天气。
+   - 用户只是在询问当前行程细节，但没有要求改动。
+
+【输出格式】
+只输出 JSON: {{ "intent": "update_plan" 或 "chat" }}
 """
     
     completion = client.chat.completions.create(
@@ -56,14 +52,21 @@ async def planner_agent(session, user_input:str):
         messages=[{"role":"user", "content":prompt}],
         stream=False
     )
-    choice = completion.choices[0]
-    text_output = ""
-    if hasattr(choice, "message") and choice.message and choice.message.content:
-        text_output = choice.message.content
-    else:
-        text_output = getattr(choice, "content", "{}")
+    
+    content = completion.choices[0].message.content
+    
+    # 清洗逻辑
+    if content is None:
+        raise ValueError("模型返回的 content 为 None")
+    cleaned_content = content.replace("```json", "").replace("```", "").strip()
+    
     try:
-        action_json = json.loads(text_output)
-    except:
-        action_json = {"action": "casual_chat", "detail": ""}
-    return action_json
+        result = json.loads(cleaned_content)
+    except json.JSONDecodeError as e:
+        print(f"[ERROR] Planner JSON 解析失败")
+
+    # 检查字段完整性
+    if "intent" not in result:
+        raise KeyError(f"[ERROR] Planner 返回了 JSON 但缺少 'intent' 字段: {result}")
+        
+    return result

@@ -8,7 +8,7 @@ from services.knowledge_service import search_knowledge_base # 导入检索功�
 async def ai_service(session, user_profile, user_input: str):
     
     # 1. Planner 依然负责路由
-    decision = await planner_agent(user_input)
+    decision = await planner_agent(session, user_input)
     intent = decision.get("intent", "chat")
     
     system_msg = ""

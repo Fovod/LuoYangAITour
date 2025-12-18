@@ -10,7 +10,7 @@ const routes = [
     },
     {
         path:'/home',
-        redirect:Home,
+        component:Home,
     },
     {
         path:'/chat',

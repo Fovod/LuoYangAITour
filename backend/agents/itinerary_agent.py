@@ -37,8 +37,20 @@ async def itinerary_agent(user_profile: UserProfile, user_input: str):
 4. 如果用户指定地点，去库里找并替换/插入。
 5. **重要**：修改后必须重新计算后续所有节点的 start 时间（顺延）。
 
-【输出格式】
-只输出标准 JSON，格式符合 Pydantic 模型。
+【必须遵守的输出格式】
+只输出纯 JSON 字符串，**不要用 ```json 包裹**，不要有任何多余文字。
+结构必须完全符合以下模板：
+{{
+  "plan": [
+    {{
+      "day": 1,
+      "spots": [
+        {{ "name": "龙门石窟", "start": "09:00", "duration": 3.0, "tags": ["历史", "摄影", "世界遗产"] }},
+        {{ "name": "真不同饭店", "start": "12:30", "duration": 1.5, "tags": ["老字号", "非遗", "宴请"] }}
+      ]
+    }}
+  ]
+}}
 """
 
     completion = client.chat.completions.create(

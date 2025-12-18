@@ -2,66 +2,71 @@ from fastapi import APIRouter
 from models.user_profile import UserProfile, UserBackground
 from models.session_model import Session
 
-# 导入三个核心 Agent
-from agents.planner_agent import planner_agent      # 1. 大脑（路由）
-from agents.itinerary_agent import itinerary_agent  # 2. 苦力（改JSON）
-from agents.role_agent import role_agent            # 3. 嘴巴（说话）
+# 导入所有组件
+from agents.planner_agent import planner_agent
+from agents.itinerary_agent import itinerary_agent
+from agents.role_agent import role_agent
+from services.knowledge_service import search_knowledge_base
 
 router = APIRouter()
 
-# 全局内存存储（模拟数据库，防止刷新页面后状态丢失）
+# --- 全局存储 (模拟数据库) ---
+# 1. 存储用户行程
 GLOBAL_USER = UserProfile(
     user_id="test_user",
-    background=UserBackground(days=1), # 默认1天
+    background=UserBackground(days=1),
     preferences={},
     state=""
+)
+
+# 2. 【新增】存储会话状态 (历史记录)
+GLOBAL_SESSION = Session(
+    session_id="test_session_001",
+    role="李白",
+    location="洛阳",
+    history=[] 
 )
 
 @router.post("/test_itinerary")
 async def test_itinerary(data: dict):
     user_input = data.get("text", "")
     
-    # --- 0. 初始化检查 ---
-    # 如果用户没行程，且输入为空（或者是刚加载页面），强制初始化
+    # --- 0. 初始化兜底 ---
     if not GLOBAL_USER.itinerary and not user_input:
         user_input = "帮我规划一个洛阳一日游"
-        # 强制标记为 update_plan，让 Itinerary Agent 去初始化
         decision = {"intent": "update_plan"} 
     else:
         # --- 1. Planner 判断意图 ---
-        decision = await planner_agent(user_input)
+        decision = await planner_agent(GLOBAL_SESSION, user_input)
         print(f"🧠 Planner 决策: {decision}")
 
-    reply = ""
+    # 定义系统提示词 (用于告诉 Role Agent 发生了什么)
+    system_msg = ""
 
-    # --- 2. 根据意图分流 ---
+    # --- 2. 分支处理 ---
     if decision["intent"] == "update_plan":
-        # === 分支 A：修改行程 ===
         print("🔧 进入行程修改模式...")
-        
-        # 让 Itinerary Agent 根据用户的话修改 JSON
+        # 调用 Itinerary Agent 修改 JSON
         await itinerary_agent(GLOBAL_USER, user_input)
-        
-        # 让 Role Agent 汇报结果 (带上用户原话作为上下文)
-        reply = await role_agent(
-            role="李白", 
-            user_input=f"用户要求：'{user_input}'。系统已完成行程更新。请向用户汇报调整结果。"
-        )
-
+        system_msg = "（系统提示：行程数据已根据用户要求更新完毕。）"
     else:
-        # === 分支 B：纯闲聊 ===
         print("💬 进入闲聊模式...")
-        
-        # 直接让 Role Agent 陪聊，不动 JSON
-        reply = await role_agent(
-            role="李白", 
-            user_input=user_input
-        )
+        system_msg = ""
 
-    # --- 3. 返回结果给前端 ---
+    # --- 3. 知识库检索 (RAG) ---
+    knowledge_context = search_knowledge_base(user_input)
+
+    # --- 4. Role Agent 生成回复 ---
+    reply = await role_agent(
+        role="李白", 
+        user_input=user_input,
+        knowledge=knowledge_context,
+        system_msg=system_msg
+    )
+
+    # --- 5. 返回结果 ---
     return {
         "reply": reply,
-        # 返回最新的行程 JSON 给前端渲染
         "itinerary": GLOBAL_USER.model_dump().get("itinerary"),
-        "debug_intent": decision # 方便前端调试看状态
+        "debug_intent": decision
     }
