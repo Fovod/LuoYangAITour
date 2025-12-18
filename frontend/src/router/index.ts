@@ -1,11 +1,16 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Chat from "../pages/Chat.vue";
 import Itinerary from "../pages/Itinerary.vue";
+import Home from "../pages/Home.vue";
 
 const routes = [
     {
         path:'/',
-        redirect:'/chat',
+        redirect:'/home',
+    },
+    {
+        path:'/home',
+        redirect:Home,
     },
     {
         path:'/chat',
@@ -13,7 +18,7 @@ const routes = [
     },
     {
         path:'/test_itinerary',
-        component:Itinerary
+        component:Itinerary,
     }
 ]
 

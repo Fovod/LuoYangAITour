@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 # from controllers.chat_controller import router
 from controllers.test_controller import router
 
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
