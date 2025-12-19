@@ -14,11 +14,14 @@ SPOTS = load_json("spots.json")
 RESTAURANTS = load_json("restaurants.json")
 HISTORY = load_json("history.json")
 
-async def search_agent(user_input:str):
+async def search_agent(user_input:str, history_str: str = ""):
     '''分析用户意图，决定检索哪个知识库，以及提取什么关键词'''
 
     prompt = f"""
 你是一个搜索引擎的意图分析器。请分析用户输入，提取检索条件。
+
+【对话历史】
+{history_str if history_str else "无"}
 
 【用户输入】
 "{user_input}"
@@ -27,6 +30,10 @@ async def search_agent(user_input:str):
 - spot: 景点、游玩、门票、看风景、去哪里玩。
 - food: 餐厅、美食、特产、吃饭、饿了、喝汤。
 - history: 历史典故、人物故事、传说、由来、文化背景。
+
+【分析逻辑】
+1. 如果用户输入包含明确关键词（如“想吃面”），优先使用当前输入的关键词。
+2. 关键：如果用户输入是承接词（如"还有呢"、"再推荐几个"、"哪里有"、"继续"），请回溯【对话历史】，找到上一次的话题，延续上一次的分类和关键词。
 
 【输出要求】
 返回纯 JSON，格式如下：

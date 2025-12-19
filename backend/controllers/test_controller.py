@@ -54,7 +54,7 @@ async def test_itinerary(data: dict):
         system_msg = ""
 
     # --- 知识库检索 (RAG) ---
-    knowledge_context = await search_knowledge_base(user_input)
+    knowledge_context = await search_knowledge_base(user_input, GLOBAL_SESSION.history)
 
     # --- 获取行程 ---
     current_plan_data = None
@@ -71,7 +71,9 @@ async def test_itinerary(data: dict):
         itinerary_data=current_plan_data
     )
 
-    # --- 返回结果 ---
+    GLOBAL_SESSION.history.append({"sender": "user", "text": user_input})
+    GLOBAL_SESSION.history.append({"sender": "ai", "text": reply})
+
     return {
         "reply": reply,
         "itinerary": GLOBAL_USER.model_dump().get("itinerary"),
