@@ -7,19 +7,15 @@ from agents.planner_agent import planner_agent
 from agents.itinerary_agent import itinerary_agent
 from agents.role_agent import role_agent
 from services.knowledge_service import search_knowledge_base
+from agents.inquiry_agent import inquiry_agent
 
 router = APIRouter()
 
-# --- 全局存储 (模拟数据库) ---
-# 1. 存储用户行程
 GLOBAL_USER = UserProfile(
-    user_id="test_user",
-    background=UserBackground(days=1),
-    preferences={},
-    state=""
+    user_id="test",
 )
 
-# 2. 【新增】存储会话状态 (历史记录)
+# 会话状态 (历史记录)
 GLOBAL_SESSION = Session(
     session_id="test_session_001",
     role="李白",
@@ -30,27 +26,40 @@ GLOBAL_SESSION = Session(
 @router.post("/test_itinerary")
 async def test_itinerary(data: dict):
     user_input = data.get("text", "")
-    
-    # --- 0. 初始化兜底 ---
-    if not GLOBAL_USER.itinerary and not user_input:
-        user_input = "帮我规划一个洛阳一日游"
-        decision = {"intent": "update_plan"} 
-    else:
-        # --- Planner 判断意图 ---
-        decision = await planner_agent(GLOBAL_SESSION, user_input)
-        print(f"🧠 Planner 决策: {decision}")
+
+    # planner agent判断意图
+    decision = await planner_agent(GLOBAL_SESSION, user_input)
+    print(f"🧠 Planner 决策: {decision}")
 
     # 定义系统提示词 (用于告诉 Role Agent 发生了什么)
     system_msg = ""
 
-    # --- 分支处理 ---
+    processed_inquiry = False   # 标记是否触发了追问
+    check_inquiry = False       # 标记是否需要检查信息完整性
     if decision["intent"] == "update_plan":
-        print("🔧 进入行程修改模式...")
-        # 调用 Itinerary Agent 修改 JSON
-        await itinerary_agent(GLOBAL_USER, user_input)
-        system_msg = "（系统提示：行程数据已根据用户要求更新完毕。）"
-    else:
-        print("💬 进入闲聊模式...")
+        check_inquiry = True
+    elif decision["intent"] == "chat":
+        if GLOBAL_USER.background.days is None:
+            check_inquiry = True
+    
+    if check_inquiry:
+        inquiry_result = await inquiry_agent(GLOBAL_USER, user_input)
+        if inquiry_result["action"] == "ask":
+            missing_info_question = inquiry_result["reply"]
+            print(f"信息缺失，触发追问: {missing_info_question}")
+
+            if decision["intent"] == "chat":
+                system_msg = f"（系统指令：用户正在闲聊，但你可以顺便地问一句：{missing_info_question}）"
+            else:
+                system_msg = f"（系统指令：关键信息缺失。请务必用{GLOBAL_SESSION.role}的口吻向用户提问：{missing_info_question}）"
+
+            processed_inquiry = True
+        elif inquiry_result["action"] == 'ready':
+            if decision["intent"] == "update_plan":
+                await itinerary_agent(GLOBAL_USER, user_input)
+                print("（系统提示：行程已生成，请向用户介绍。）")
+    if not processed_inquiry and decision["intent"] == "chat":
+        print("💬 纯闲聊模式...")
         system_msg = ""
 
     # --- 知识库检索 (RAG) ---
@@ -58,9 +67,8 @@ async def test_itinerary(data: dict):
 
     # --- 获取行程 ---
     current_plan_data = None
-    if GLOBAL_USER.itinerary is None:
-        raise ValueError("test_controller行程为空")
-    current_plan_data = GLOBAL_USER.itinerary.model_dump()
+    if GLOBAL_USER.itinerary is not None:
+        current_plan_data = GLOBAL_USER.itinerary.model_dump()
 
     # --- Role Agent 生成回复 ---
     reply = await role_agent(

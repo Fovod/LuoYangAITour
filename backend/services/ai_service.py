@@ -20,9 +20,8 @@ async def ai_service(session, user_profile, user_input: str):
     knowledge_context = await search_knowledge_base(user_input)
 
     current_plan_data = None
-    if user_profile.itinerary is None:
-        raise ValueError("ai_service行程为空")
-    current_plan_data = user_profile.itinerary.model_dump()
+    if user_profile.itinerary is not None:
+        current_plan_data = user_profile.itinerary.model_dump()
 
     # 调用 Role Agent，把搜到的知识喂给它
     reply = await role_agent(

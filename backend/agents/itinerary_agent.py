@@ -11,6 +11,8 @@ async def itinerary_agent(user_profile: UserProfile, user_input: str):
     """根据用户的话，直接修改 JSON"""
 
     # 1. 获取当前状态
+    bg = user_profile.background
+    bg_info = f"游玩天数:{bg.days}, 人数:{bg.people_count}, 人群类型:{bg.people_type}, 预算:{bg.budget}, 节奏:{bg.pace}"
     current_plan = json.dumps(user_profile.itinerary.model_dump(), ensure_ascii=False) if user_profile.itinerary else "无"
     
     # 2. 简化数据喂给 LLM (避免 Token 溢出)
@@ -19,6 +21,9 @@ async def itinerary_agent(user_profile: UserProfile, user_input: str):
 
     prompt = f"""
 你是一个行程数据维护员。请根据【用户指令】更新【当前行程JSON】。
+
+【用户背景】
+{bg_info}
 
 【可用资源】
 景点库：{spots_str}
@@ -36,6 +41,11 @@ async def itinerary_agent(user_profile: UserProfile, user_input: str):
 3. 如果用户说"累了"，插入休息节点。
 4. 如果用户指定地点，去库里找并替换/插入。
 5. 重要：修改后必须重新计算后续所有节点的 start 时间（顺延）。
+
+【规划原则】
+1. 如果是“亲子/带老人”,每日景点不超过3个,必须安排中午休息。
+2. 如果是“特种兵”,每日景点可以安排5个以上,早出晚归。
+3. 如果是“情侣”,可以多安排夜景、浪漫餐厅。
 
 【必须遵守的输出格式】
 只输出纯 JSON 字符串，**不要用 ```json 包裹**，不要有任何多余文字。
