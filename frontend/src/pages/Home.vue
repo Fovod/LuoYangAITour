@@ -78,7 +78,7 @@
         <div class="p-3 border-b bg-gray-100 flex justify-between items-center sticky top-0 z-10">
           <h3 class="font-bold text-gray-700">📋 行程数据视图 </h3>
           <div class="text-xs text-gray-500 font-mono" v-if="itinerary">
-            Days: {{ itinerary.plan.length }} | Total Spots: {{ itinerary.plan.reduce((acc, day) => acc + day.spots.length, 0) }}
+            Days: {{ itinerary.plan.length }} | Total Spots: {{ itinerary.plan.reduce((acc: number, day: any)  => acc + day.spots.length, 0) }}
           </div>
         </div>
 

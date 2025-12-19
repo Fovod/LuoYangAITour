@@ -36,14 +36,14 @@ async def test_itinerary(data: dict):
         user_input = "帮我规划一个洛阳一日游"
         decision = {"intent": "update_plan"} 
     else:
-        # --- 1. Planner 判断意图 ---
+        # --- Planner 判断意图 ---
         decision = await planner_agent(GLOBAL_SESSION, user_input)
         print(f"🧠 Planner 决策: {decision}")
 
     # 定义系统提示词 (用于告诉 Role Agent 发生了什么)
     system_msg = ""
 
-    # --- 2. 分支处理 ---
+    # --- 分支处理 ---
     if decision["intent"] == "update_plan":
         print("🔧 进入行程修改模式...")
         # 调用 Itinerary Agent 修改 JSON
@@ -53,18 +53,25 @@ async def test_itinerary(data: dict):
         print("💬 进入闲聊模式...")
         system_msg = ""
 
-    # --- 3. 知识库检索 (RAG) ---
-    knowledge_context = search_knowledge_base(user_input)
+    # --- 知识库检索 (RAG) ---
+    knowledge_context = await search_knowledge_base(user_input)
 
-    # --- 4. Role Agent 生成回复 ---
+    # --- 获取行程 ---
+    current_plan_data = None
+    if GLOBAL_USER.itinerary is None:
+        raise ValueError("test_controller行程为空")
+    current_plan_data = GLOBAL_USER.itinerary.model_dump()
+
+    # --- Role Agent 生成回复 ---
     reply = await role_agent(
         role="李白", 
         user_input=user_input,
         knowledge=knowledge_context,
-        system_msg=system_msg
+        system_msg=system_msg,
+        itinerary_data=current_plan_data
     )
 
-    # --- 5. 返回结果 ---
+    # --- 返回结果 ---
     return {
         "reply": reply,
         "itinerary": GLOBAL_USER.model_dump().get("itinerary"),
